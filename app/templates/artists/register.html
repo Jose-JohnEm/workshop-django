@@ -1,7 +1,7 @@
 {% extends 'artists/base.html' %}
 {% block main %}
 <h2>Register</h2>
-<form method="post" action="{% url 'reseau_artistes_app:register' %}" enctype="multipart/form-data">
+<form method="post" action="{% url 'app:register' %}" enctype="multipart/form-data">
     <table class="small box">
         {% csrf_token %}
 

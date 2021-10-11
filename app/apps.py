@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class NetworkAppConfig(AppConfig):
+class ReseauArtistesAppConfig(AppConfig):
     name = 'app'

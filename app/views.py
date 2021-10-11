@@ -18,7 +18,7 @@ def index(request):
     page_number = request.GET.get('page')
 
     posts = Paginator(Post.objects.all().order_by("id"), 12)
-    return render(request, 'artists/index.html', {"main_posts": posts.get_page(page_number)})
+    return render(request, 'artists/index.html', {"posts": posts.get_page(page_number)})
 
 
 @login_required
@@ -61,7 +61,7 @@ def register(request):
             user = authenticate(request, user.username, user.password)
             if user:
                 messages.success(request, 'Registration successful.')
-                return redirect('reseau_artistes_app:upload_post')
+                return redirect('app:upload_post')
         messages.error(request, 'Unsucessful registration!')
     return render(request, 'artists/register.html', {"form": NewUserForm(), })
 

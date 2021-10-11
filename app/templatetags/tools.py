@@ -1,5 +1,5 @@
 from django import template
-from reseau_artistes_app.models import Post, Comment
+from app.models import Post, Comment
 from django.contrib.auth.models import User
 
 register = template.Library()

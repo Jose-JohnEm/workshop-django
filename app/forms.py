@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from reseau_artistes_app.models import Post
+from app.models import Post
 from django.forms import ModelForm
 from django import forms
 
@@ -23,6 +23,6 @@ class NewUserForm(UserCreationForm):
 class UploadPostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'description', 'format', 'content']
+        fields = ['description',]
 
     content = forms.FileField()

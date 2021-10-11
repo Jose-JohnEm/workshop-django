@@ -9,10 +9,7 @@ class Post(models.Model):
         IMAGE = 3
         BOOK = 4
 
-    title = models.CharField(max_length=100)
-    format = models.IntegerField(choices=Format.choices)
     description = models.CharField(max_length=100)
-    content = models.FileField()
     last_modified_at = models.DateField(auto_now_add=True)
     likes = models.ManyToManyField(to=User, related_name="likes", default=None)
     views = models.ManyToManyField(to=User, related_name="views", default=None)

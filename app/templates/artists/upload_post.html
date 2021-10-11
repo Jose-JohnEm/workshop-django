@@ -8,7 +8,7 @@
 			<h1>Upload a<br />
 				Song</h1>
 		</header>
-		<form method="post" action="{% url 'reseau_artistes_app:upload_post' %}" enctype="multipart/form-data">
+		<form method="post" action="{% url 'app:upload_post' %}" enctype="multipart/form-data">
 			<table class="small box">
 				{{ form.as_p }}
 				{% csrf_token %}

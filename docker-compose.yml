@@ -9,8 +9,8 @@ services:
       - ./data/db:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/1-init.sql
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test
+      - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=postgres
     networks:
       - backend
