@@ -70,9 +70,76 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
-Clique maintenant [ici](http://127.0.0.1:8000/) pour ouvrir ton application web !
+Clique maintenant [ici](http://127.0.0.1:8000/) pour ouvrir ton projet !
 
 Voici ce que tu devrais obtenir :
 
 ![Rendu du seveur!](https://files.realpython.com/media/Screenshot_2018-12-09_at_17.58.16.20be0c5d3f1e.png)
 
+## Étape 3 : Création de notre première vue
+
+Avant de s'attaquer à la création de la vue nous allons d'abord la mettre dans une application.
+
+En effet, avec Django ton projet peut-être composé de plusieurs applications, les tiennes comme celles partagées sur Internet.
+
+Nous allons créer notre application et l'appeler _news_ :
+
+`python manage.py startapp news`
+
+Voici son arborescence :
+
+```
+news/
+    __init__.py
+    admin.py
+    apps.py
+    migrations/
+        __init__.py
+    models.py
+    tests.py
+    views.py
+```
+
+Tu remarqueras qu'il apparaît maintenant à l'intérieur un fichier nommé `views.py`. C'est à l'intérieur de celle-ci que nous ajouterons nos vues.
+
+Éditons le ainsi :
+
+```
+from django.http import HttpResponse
+
+
+def ma_vue(request):
+    return HttpResponse("Oh pète sa mère ! Ma vue marche !")
+```
+
+Maintenant que la vue a été créée il faut maintenant la connecter à une URL.
+
+Créons un fichier `urls.py` à l'intérieur du dossier `news` et dedans ajoute ça :
+
+```
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('', views.ma_vue, name='ma_vue'),
+]
+```
+
+_Le premier paramètre de la fonction `path()` sert à définir la route. Laisser des guillements vides (`path('')`) équivaut à la route `/`_
+
+Bien ! L'URL existe dans les routes de l'application `news` mais pas dans les routes du projet. Il nous reste donc une dernière chose à faire cette fois-ci dans le `urls.py` à l'intérieur du dossier `<le-nom-de-ton-projet>` :
+
+```
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path('news/', include('news.urls')),
+    path('admin/', admin.site.urls),
+]
+```
+
+Maintenant il est temps de voir cette vue de nos propres yeux.
+
+Relance le serveur et si tout s'affiche alors tu peux continuer !
