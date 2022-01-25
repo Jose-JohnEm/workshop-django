@@ -42,11 +42,11 @@ Voici en très gros à quoi servent les fichiers :
 
 * `manage.py` : Notre interface en ligne de commande qui va nous permettre d'interagir avec ce projet Django.
 * `__init__.py` : Un fichier vide qui indique à Python que ce répertoire doit être considéré comme un package Python.
-* `settings.py` : Ce fichier contient toute les paramètres de fonctionnement de votre application
+* `settings.py` : Ce fichier contient tous les paramètres de fonctionnement de votre application
 * `mysite/urls.py` : Ce fichier contient les déclarations d'URL pour ce projet Django
-* `asgi.py` et `wsgi.py` : Ces fichiers ne ne les calcule pas (c'est pour le déploiement en très gros).
+* `asgi.py` et `wsgi.py` : Ces fichiers ne les calcule pas (c'est pour le déploiement en très gros).
 
-Maintenant que tout est créé, déplace toi dans le dossier et lance le serveur :
+Maintenant que tout est créé, déplace-toi dans le dossier et lance le serveur :
 
 `python3 manage.py runserver`
 
@@ -104,7 +104,7 @@ Tu remarqueras qu'il apparaît maintenant à l'intérieur un fichier nommé `vie
 
 Éditons le ainsi :
 
-```
+```python
 from django.http import HttpResponse
 
 
@@ -116,7 +116,7 @@ Maintenant que la vue a été créée il faut maintenant la connecter à une URL
 
 Créons un fichier `urls.py` à l'intérieur du dossier `news` et dedans ajoute ça :
 
-```
+```python
 from django.urls import path
 
 from . import views
@@ -130,7 +130,7 @@ _Le premier paramètre de la fonction `path()` sert à définir la route. Laisse
 
 Bien ! L'URL existe dans les routes de l'application `news` mais pas dans les routes du projet. Il nous reste donc une dernière chose à faire cette fois-ci dans le `urls.py` à l'intérieur du dossier `<le-nom-de-ton-projet>` :
 
-```
+```python
 from django.contrib import admin
 from django.urls import include, path
 
@@ -140,6 +140,43 @@ urlpatterns = [
 ]
 ```
 
-Maintenant il est temps de voir cette vue de nos propres yeux.
+Maintenant, il est temps de voir cette vue de nos propres yeux.
 
 Relance le serveur et si tout s'affiche alors tu peux continuer !
+
+## Etape 4 : Pages de connexion
+
+Il se trouve que Django nous donne d'office un modèle de `User`. Et comme nous avons besoin d'un profile `User`
+pour se connecter, créer des posts, en liker, en commenter, c'est pile ce qu'il nous faut !
+
+Il ne nous reste plus qu'à créer les vues `login` et `register`. Dans `views.py`, écris :
+
+```python
+def login(request):
+    if request.method == "POST":
+        # Check credentials from form and log in
+        ...
+    elif request.method == "GET":
+        # return form
+        ...
+
+
+def register(request):
+    if request.method == "POST":
+        # Create User, and log in
+        ...
+    elif request.method == "GET":
+        # return form
+        ...
+```
+
+> :bulb: Plus d'informations sur les requêtes `GET` et `POST` [ici](https://lazaroibanez.com/difference-between-the-http-requests-post-and-get-3b4ed40164c1)
+
+Les commentaires mentionnent un `form`. En effet, pour se connecter ou créer un compte, il faut remplir des champs utilisateurs. 
+Django nous donne accès à deux forms pour faire cela : `AuthenticationForm` et `UserCreationForm`.
+
+- [ ] Compléter la vue login
+- [ ] Compléter la vue register
+
+> :bulb: Si tu galères trop, va jeter un oeil à [ce tutoriel](https://www.askpython.com/django/django-user-authentication)
+> 
