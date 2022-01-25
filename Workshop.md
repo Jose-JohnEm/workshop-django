@@ -178,5 +178,40 @@ Django nous donne accès à deux forms pour faire cela : `AuthenticationForm` et
 - [ ] Compléter la vue login
 - [ ] Compléter la vue register
 
+N'oublie pas d'appliquer `python3 manage.py makemigrations` et `python3 manage.py migrate` pour enregistrer tes utilisateurs
+de test dans la base de donnée !
+
 > :bulb: Si tu galères trop, va jeter un oeil à [ce tutoriel](https://www.askpython.com/django/django-user-authentication)
-> 
+
+## Etape 5 - Création de Posts et de commentaires
+
+Maintenant que notre utilisateur peut se créer un compte et se connecter, il serait temps qu'il puisse créer un post!
+Ces posts doivent être ensuite enregistrés dans la base de données, comme nos `User`.
+Django ne contient pas de builtin `Post` malheureusement, nous allons devoir le faire nous-mêmes.
+
+- [ ] Créer le modèle `Post` dans `models.py` avec les fields suivants:
+    - Author : User, relation One to Many
+    - Content : TextField, le contenu écrit du post
+    - Likes: User, relation Many to Many
+- [ ] Créer le modèle `Comment` dans `models.py` avec les fields suivants:
+    - Author : User, relation One to Many
+    - Content, Text Field, contenu du commentaire
+    - Likes: User, relation Many to Many
+    - Post_parent: Post, relation One to Many
+- [ ] Créer un fichier `forms.py` dans le même dossier que `views.py`.
+- [ ] Rédiger les forms : `PostCreationForm` et `CommentCreationForm` dans `forms.py`
+- [ ] Et enfin, rédiger les vues `create_post` et `comment` dans `views.py`. Attention, n'oublie pas de faire attention 
+à ce que l'utilisateur soit bien connecté avant d'effectuer une telle action !
+
+### Petite astuce pour vérifier
+Django nous met à disposition un shell où l'on peut ajouter des éléments, les lires, tout ça en python sans passer par du langage SQL !
+```python
+python3 manage.py shell
+>>> from models import Post, Comment
+>>> Post.objets.all() # Devrait afficher tous les posts présents dans la DB, pareil pour Comment
+```
+
+*Besoin d'aide ?*
+- [Relations dans les bases de données](https://docs.djangoproject.com/fr/4.0/topics/db/examples/)
+- [Les modèles en Django](https://docs.djangoproject.com/fr/4.0/topics/db/models/)
+- [Les forms en Django](https://docs.djangoproject.com/fr/4.0/topics/forms/)
