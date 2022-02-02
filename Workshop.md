@@ -1,5 +1,18 @@
 # Workshop Django : Créer son un réseau social avec Django
 
+Ce Workshop est destiné aux débutants en Django.
+Avec ce Workshop, tu apprendras : 
+
+:white_check_mark: Les modèles
+
+
+:white_check_mark: Les forms faits pour créer des modèles
+
+
+:white_check_mark: Le système d'authentification de Django
+
+
+:white_check_mark: L'architecture MVT
 
 ## Introduction
 
@@ -215,6 +228,7 @@ Voici la démarche à suivre.
 
 class FeedView(ListView):
   template_name = "post/feed.html"
+  context_object_name = "posts"
   ... # TODO
 
   def get_queryset(self):
@@ -259,4 +273,100 @@ urlpatterns = [
 - [Les modèles en Django](https://docs.djangoproject.com/fr/4.0/topics/db/models/)
 - [Les forms en Django](https://docs.djangoproject.com/fr/4.0/topics/forms/)
 
-## Etape 5 : Les utilisateurs et les profiles
+## Etape 5 : Les utilisateurs
+
+### 5.1 : Modèles
+Django nous donne d'emblée un modèle d'utilisateur prédéfini. Cependant, il est tout de même conseillé d'hériter de
+ce modèle, au cas où l'on voudrait le customiser plus tard.
+C'est donc ce que nous allons faire dans `users/models.py`:
+```python
+from django.contrib.auth.models import AbstractBaseUser
+
+class User(AbstractBaseUser):
+    pass
+```
+Dans `<le-nom-de-ton-projet>/settings.py`, il faut préciser que le modèle d'authentification à regarder pour le moteur django
+est le nôtre, défini dans `users/models.py`
+```python
+AUTH_USER_MODEL = 'users.User'
+```
+### 5.2 Vues
+
+Il faut savoir que Django nous donne d'emblée un set d'urls prédéfini pour les actions basiques d'utilisateurs avec `accounts`.
+Néanmoins, nous avons quelques petites choses à ajouter pour signifier au moteur de Django que c'est ce que nous souhaitons utiliser :
+```python
+# <le-nom-de-ton-projet>/urls.py
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('posts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('users.views'))
+]
+```
+Désormais, nous avons accès à toutes ces urls : 
+```
+accounts/login/ [name='login']
+accounts/logout/ [name='logout']
+accounts/password_change/ [name='password_change']
+accounts/password_change/done/ [name='password_change_done']
+accounts/password_reset/ [name='password_reset']
+accounts/password_reset/done/ [name='password_reset_done']
+accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+accounts/reset/done/ [name='password_reset_complete']
+```
+> :bulb: les variables `name=` correspondent au nom de notre vue. Par exemple, pour l'url [http://localhost:8000/accounts/login]()
+> nous devons définir sa vue correspondante avec le nom `login`. C'est d'ailleurs ce que nous allons faire !
+
+Complètes les vues suivantes :
+```python
+
+def register(request):
+
+  if request.user.is_authenticated:
+    return redirect('/')
+
+  if request.method == 'POST':
+        ... # TODO
+        return redirect('/')
+  return render(request, 'accounts/register.html', {"form": UserCreationForm}) # Petite indice sur le form built-in à utiliser !
+
+
+def login(request):
+
+  if request.user.is_authenticated:
+    return redirect('/')
+
+  if request.method == 'POST':
+    ... # TODO
+  return render(request, 'accounts/login.html', {"form": AuthenticationForm})
+
+
+def logout(request):
+  ... # TODO
+  return redirect('/')
+```
+:warning: Merci de garder le même path pour les templates HTML, car c'est comme ça qu'elles sont nommées dans le front.
+
+> :bulb: Les forms `UserCreationForm` et `AuthenticationForm` ne sont pas à codés, mais sont déjà implémentés dans Django !
+
+> :bulb: Si la migration ne fonctionne pas, supprime le fichier `db.sqlite3`, tous les fichiers dans les dossiers `migrations`
+> (`users/migrations` et `posts/migrations`) sauf les `__init__.py`, ainsi que les dossiers `__pycache__/`.
+
+### 5.3 Synchroniser
+
+Maintenant que nous avons des utilisateurs, ils seraient temps qu'ils soient maîtres de leurs postes et de leurs
+commentaires !
+ - [ ] Complète les modèles Post et Comment en leur ajoutant à tous deux un field author, qui est une relation de type
+ - `ForeignKey`, liée à notre objet `User` se trouvant dans `users/models.py`.
+ - [ ] Dans `posts/templates/post/feed.html` ligne `149`, remplace "Me" par `{{post.author_username}}`
+ - [ ] Dans `posts/templates/post/feed.html` ligne `190`, remplace "Jason Bourne" par `{{comment.author_username}}`
+ - [ ] Même principe dans le fichier `posts/templates/post/post_detail.html`.
+
+La synchronisation et la majeure partie du Workshop est désormais terminée !
+
+## Bonus
+
+- [ ] Une page profile de l'utilisateur, avec vue et un form pour modifier
+- [ ] Un avatar customisé
+- [ ] Des likes sous les posts et les commentaires
+- [ ] Principe de "follow" "unfollow"
