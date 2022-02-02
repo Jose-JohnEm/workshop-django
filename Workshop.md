@@ -76,20 +76,37 @@ Voici ce que tu devrais obtenir :
 
 ![Rendu du seveur!](https://files.realpython.com/media/Screenshot_2018-12-09_at_17.58.16.20be0c5d3f1e.png)
 
-## Étape 3 : Création de notre première vue
+### Dernières vérifications
 
-Avant de s'attaquer à la création de la vue nous allons d'abord la mettre dans une application.
-
+Créons deux sous-applications liées à notre projet.
 En effet, avec Django ton projet peut-être composé de plusieurs applications, les tiennes comme celles partagées sur Internet.
 
-Nous allons créer notre application et l'appeler _news_ :
+Nous allons créer nos deux applications que nous allons appeler _posts_ et _users_ :
 
-`python manage.py startapp news`
+`python3 manage.py startapp posts`
+`python3 manage.pu startapp users`
 
-Voici son arborescence :
+* Dans `settings.py` du dossier `<le-nom-de-ton-projet>`, abrite la liste globale `INSTALLED_APPS`. En plus des autres,
+* ajoute les strings `"posts"` et `"users"`.
+
+* Dans `settings.py` du dossier `<le-nom-de-ton-projet>`, il y'a une variable `ALLOWED_HOST` qui est une liste vide.
+  Ajoutons `"*"` comme seul élément de cette liste : ça permettra à localhost (toi) de pouvoir développer tranquillement.
+
+## Étape 3 : Création de notre première vue
+
+Voici l'arborescence de nos deux applications :
 
 ```
-news/
+posts/
+    __init__.py
+    admin.py
+    apps.py
+    migrations/
+        __init__.py
+    models.py
+    tests.py
+    views.py
+users/
     __init__.py
     admin.py
     apps.py
@@ -100,9 +117,14 @@ news/
     views.py
 ```
 
-Tu remarqueras qu'il apparaît maintenant à l'intérieur un fichier nommé `views.py`. C'est à l'intérieur de celle-ci que nous ajouterons nos vues.
+Comme tu l'auras compris, une application sera dédiée aux utilisateurs, le profile, et l'autre plus spécifiquement
+au fil d'actualité, aux posts, commentaires, etc.
 
-Éditons le ainsi :
+Tu remarqueras qu'il apparaît maintenant à l'intérieur de chacun des applications un fichier nommé `views.py`.
+C'est à l'intérieur de celle-ci que nous ajouterons nos vues.
+
+
+Éditons celui du dossier `posts/` ainsi :
 
 ```python
 from django.http import HttpResponse
@@ -114,7 +136,7 @@ def ma_vue(request):
 
 Maintenant que la vue a été créée il faut maintenant la connecter à une URL.
 
-Créons un fichier `urls.py` à l'intérieur du dossier `news` et dedans ajoute ça :
+Créons un fichier `urls.py` à l'intérieur du dossier `posts` et dedans ajoute ça :
 
 ```python
 from django.urls import path
@@ -128,7 +150,7 @@ urlpatterns = [
 
 _Le premier paramètre de la fonction `path()` sert à définir la route. Laisser des guillements vides (`path('')`) équivaut à la route `/`_
 
-Bien ! L'URL existe dans les routes de l'application `news` mais pas dans les routes du projet. Il nous reste donc une dernière chose à faire cette fois-ci dans le `urls.py` à l'intérieur du dossier `<le-nom-de-ton-projet>` :
+Bien ! L'URL existe dans les routes de l'application `posts` mais pas dans les routes du projet. Il nous reste donc une dernière chose à faire cette fois-ci dans le `urls.py` à l'intérieur du dossier `<le-nom-de-ton-projet>` :
 
 ```python
 from django.contrib import admin
@@ -144,64 +166,32 @@ Maintenant, il est temps de voir cette vue de nos propres yeux.
 
 Relance le serveur et si tout s'affiche alors tu peux continuer !
 
-## Etape 4 : Pages de connexion
+## Etape 4 : Posts et commentaires
 
-Il se trouve que Django nous donne d'office un modèle de `User`. Et comme nous avons besoin d'un profile `User`
-pour se connecter, créer des posts, en liker, en commenter, c'est pile ce qu'il nous faut !
+Comme vous pouvez le voir, les dossiers `templates.zip` `static.zip` et `templatetags.zip` vous sont fournis.
+Ceux-ci font partie du frontend pour vous faciliter l'apprentissage. Il faut les unzipper et les déplacer dans l'application
+_posts_. 
 
-Il ne nous reste plus qu'à créer les vues `login` et `register`. Dans `views.py`, écris :
-
-```python
-def login(request):
-    if request.method == "POST":
-        # Check credentials from form and log in
-        ...
-    elif request.method == "GET":
-        # return form
-        ...
-
-
-def register(request):
-    if request.method == "POST":
-        # Create User, and log in
-        ...
-    elif request.method == "GET":
-        # return form
-        ...
+```bash
+unzip templates.zip ; mv templates/ <le-nom-de-ton-projet>/posts
+unzip static.zip ; mv static/ <le-nom-de-ton-projet>/posts
+unzip templatetags.zip ; mv templatetags/ <le-nom-de-ton-projet>/posts
 ```
 
-> :bulb: Plus d'informations sur les requêtes `GET` et `POST` [ici](https://lazaroibanez.com/difference-between-the-http-requests-post-and-get-3b4ed40164c1)
+### 4.1 Modèles
 
-Les commentaires mentionnent un `form`. En effet, pour se connecter ou créer un compte, il faut remplir des champs utilisateurs. 
-Django nous donne accès à deux forms pour faire cela : `AuthenticationForm` et `UserCreationForm`.
+Dans `models.py`, nous allons définir les modèles `Post` et `Comment` qui seront créés par nos utilisateurs.
 
-- [ ] Compléter la vue login
-- [ ] Compléter la vue register
+- [ ] Créer le modèle `Post` avec les fields suivants : 
+  - [ ] `content`, qui est un `TextField` avec `max_length=512`
 
-N'oublie pas d'appliquer `python3 manage.py makemigrations` et `python3 manage.py migrate` pour enregistrer tes utilisateurs
-de test dans la base de donnée !
+- [ ] Créer le modèle `Comment` avec les fields suivants :
+  - [ ] `comment_content` qui est un `TextField` avec `max_length=512`
+  - [ ] `post_parent` qui est une relation de base de donnée ForeignKey liée à l'objet `Post`.
 
-> :bulb: Si tu galères trop, va jeter un oeil à [ce tutoriel](https://www.askpython.com/django/django-user-authentication)
+:warning: Attention, merci de garder les mêmes noms de variables car celles-ci sont utilisées dans le front.
 
-## Etape 5 - Création de Posts et de commentaires
-
-Maintenant que notre utilisateur peut se créer un compte et se connecter, il serait temps qu'il puisse créer un post!
-Ces posts doivent être ensuite enregistrés dans la base de données, comme nos `User`.
-Django ne contient pas de builtin `Post` malheureusement, nous allons devoir le faire nous-mêmes.
-
-- [ ] Créer le modèle `Post` dans `models.py` avec les fields suivants:
-    - Author : User, relation One to Many
-    - Content : TextField, le contenu écrit du post
-    - Likes: User, relation Many to Many
-- [ ] Créer le modèle `Comment` dans `models.py` avec les fields suivants:
-    - Author : User, relation One to Many
-    - Content, Text Field, contenu du commentaire
-    - Likes: User, relation Many to Many
-    - Post_parent: Post, relation One to Many
-- [ ] Créer un fichier `forms.py` dans le même dossier que `views.py`.
-- [ ] Rédiger les forms : `PostCreationForm` et `CommentCreationForm` dans `forms.py`
-- [ ] Et enfin, rédiger les vues `create_post` et `comment` dans `views.py`. Attention, n'oublie pas de faire attention 
-à ce que l'utilisateur soit bien connecté avant d'effectuer une telle action !
+> :bulb: En savoir plus sur les [relations dans les bases de données](https://docs.djangoproject.com/fr/4.0/topics/db/examples/)
 
 ### Petite astuce pour vérifier
 Django nous met à disposition un shell où l'on peut ajouter des éléments, les lires, tout ça en python sans passer par du langage SQL !
@@ -209,9 +199,64 @@ Django nous met à disposition un shell où l'on peut ajouter des éléments, le
 python3 manage.py shell
 >>> from models import Post, Comment
 >>> Post.objets.all() # Devrait afficher tous les posts présents dans la DB, pareil pour Comment
+>>> p = Post(content="lol")
+>>> p.save()
+```
+
+### 4.2 Vues
+
+Maintenant, il s'agirait de pouvoir créer à travers le site nos objets `Post` et `Comment`.
+Voici la démarche à suivre.
+
+- [ ] Créer un fichier `forms.py` dans le même dossier que `views.py`.
+- [ ] Rédiger les forms : `PostCreationForm` et `CommentCreationForm` dans `forms.py`
+- [ ] Et enfin, rédiger les vues `Feed`, `create_comment` et `upload_post` dans `views.py`, avec la signature suivante :
+```python
+
+class FeedView(ListView):
+  template_name = "post/feed.html"
+  ... # TODO
+
+  def get_queryset(self):
+    ... # TODO
+
+
+def create_post(request):
+  if request.method == 'POST':
+    ... # TODO
+  elif request.method == "GET":
+    return render(request, "post/upload_post.html", {"post_form": PostCreationForm})
+
+
+def create_comment(request, pk):
+  if request.method == "POST":
+    form = ... # TODO
+    if form.is_valid():
+      return redirect('/')
+    else:
+      messages.error(request, "An error has occurred. Please submit your comment again.")
+  elif request.method == "GET":
+    return render(request, "post/post_detail.html", {"post": Post.objects.get(pk=pk),
+                                                     "comments": Comments.objects.filter(parent_post_id=pk),
+                                                     "comment_form": CommentCreationForm})
+```
+
+:warning: Merci de garder le même contexte dans les retours de fonction, car c'est ce qui est utilisé dans le front.
+
+Et enfin, créer le fichier `posts/urls.py` et y ajouter nos vues de la sorte :
+```python
+from django.urls import path
+from. import views
+
+urlpatterns = [
+  path('', views.FeedView.as_view(), name="/"),
+  path('upload_post/', views.create_post, name="upload_post"),
+  path('posts/<int:pk>/', views.create_comment, name="create-comment-view")
+]
 ```
 
 *Besoin d'aide ?*
-- [Relations dans les bases de données](https://docs.djangoproject.com/fr/4.0/topics/db/examples/)
 - [Les modèles en Django](https://docs.djangoproject.com/fr/4.0/topics/db/models/)
 - [Les forms en Django](https://docs.djangoproject.com/fr/4.0/topics/forms/)
+
+## Etape 5 : Les utilisateurs et les profiles
