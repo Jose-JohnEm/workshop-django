@@ -193,12 +193,12 @@ unzip templatetags.zip ; mv templatetags/ <le-nom-de-ton-projet>/posts
 
 ### 4.1 Modèles
 
-Dans `models.py`, nous allons définir les modèles `Post` et `Comment` qui seront créés par nos utilisateurs.
+Dans `models.py`, nous allons définir les modèles `Post` et `Comments` qui seront créés par nos utilisateurs.
 
 - [ ] Créer le modèle `Post` avec les fields suivants : 
   - [ ] `content`, qui est un `TextField` avec `max_length=512`
 
-- [ ] Créer le modèle `Comment` avec les fields suivants :
+- [ ] Créer le modèle `Comments` avec les fields suivants :
   - [ ] `comment_content` qui est un `TextField` avec `max_length=512`
   - [ ] `post_parent` qui est une relation de base de donnée ForeignKey liée à l'objet `Post`.
 
@@ -210,7 +210,7 @@ Dans `models.py`, nous allons définir les modèles `Post` et `Comment` qui sero
 Django nous met à disposition un shell où l'on peut ajouter des éléments, les lires, tout ça en python sans passer par du langage SQL !
 ```python
 python3 manage.py shell
->>> from models import Post, Comment
+>>> from posts.models import Post, Comment
 >>> Post.objets.all() # Devrait afficher tous les posts présents dans la DB, pareil pour Comment
 >>> p = Post(content="lol")
 >>> p.save()
